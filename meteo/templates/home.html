@@ -1,0 +1,67 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'meteo/style.css' %}" />
+    <title>Прогноз погоды</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Прогноз погоды</h1>
+
+      <form method="get" action="{% url 'home' %}" class="search-form">
+        <input type="text" placeholder="Введите город" name="city" required />
+        <button type="submit">Поиск</button>
+      </form>
+
+      {% if last_city %}
+      <p class="last-city">
+        Вы уже смотрели погоду в <strong>{{ last_city }}</strong>.
+        <a href="?city={{ last_city }}">Посмотреть снова</a>
+      </p>
+      {% endif %} {% if error %}
+      <p class="error">{{ error }}</p>
+      {% endif %} {% if weather %}
+      <div class="weather">
+        <h2>Погода сейчас</h2>
+        <ul>
+          <li>Температура: {{ weather.temperature }} °C</li>
+          <li>Скорость ветра: {{ weather.windspeed }} км/ч</li>
+        </ul>
+      </div>
+      {% endif %} {% if forecast %}
+      <div class="forecast">
+        <h2>Прогноз на ближайшие дни</h2>
+        <table>
+          <tr>
+            <th>Дата</th>
+            <th>Мин °C</th>
+            <th>Макс °C</th>
+            <th>Осадки (%)</th>
+          </tr>
+          {% for day in forecast %}
+          <tr>
+            <td>{{ day.date }}</td>
+            <td>{{ day.temp_min }}</td>
+            <td>{{ day.temp_max }}</td>
+            <td>{{ day.precip }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      {% endif %} {% if history %}
+      <div class="history">
+        <h3>История поиска:</h3>
+        <ul>
+          {% for item in history %}
+          <li><a href="?city={{ item }}">{{ item }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>
