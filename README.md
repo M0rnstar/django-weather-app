@@ -26,8 +26,8 @@
 1. Клонировать репозиторий:
 
 ```bash
-git clone <URL>
-cd <project_folder>
+git clone https://github.com/M0rnstar/django-weather-app
+cd django-weather-app
 ```
 
 2. Установить зависимости:
