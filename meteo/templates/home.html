@@ -13,7 +13,15 @@
       <h1>Прогноз погоды</h1>
 
       <form method="get" action="{% url 'home' %}" class="search-form">
-        <input type="text" placeholder="Введите город" name="city" required />
+        <input
+          type="text"
+          id="city-input"
+          name="city"
+          placeholder="Введите город"
+          list="suggestions"
+          autocomplete="off"
+        />
+        <datalist id="suggestions"></datalist>
         <button type="submit">Поиск</button>
       </form>
 
@@ -63,5 +71,27 @@
       </div>
       {% endif %}
     </div>
+
+    <script>
+      document
+        .getElementById("city-input")
+        .addEventListener("input", function () {
+          const query = this.value;
+          if (query.length < 2) return;
+
+          fetch(`/autocomplete/?q=${encodeURIComponent(query)}`)
+            .then((response) => response.json())
+            .then((data) => {
+              const datalist = document.getElementById("suggestions");
+              datalist.innerHTML = "";
+
+              data.results.forEach((city) => {
+                const option = document.createElement("option");
+                option.value = city;
+                datalist.appendChild(option);
+              });
+            });
+        });
+    </script>
   </body>
 </html>
