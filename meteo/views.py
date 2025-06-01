@@ -84,3 +84,19 @@ def stats_api(request):
         for log in SearchLog.objects.all().order_by("-count")
     }
     return JsonResponse(data, json_dumps_params={'ensure_ascii': False})
+
+
+def autocomplete_city(request):
+    query = request.GET.get("q")
+    if query:
+        geo_url = "https://geocoding-api.open-meteo.com/v1/search"
+        geo_params = {"name": query, "count": 5, "language": "ru", "format": "json"}
+        response = requests.get(geo_url, params=geo_params)
+
+        if response.status_code == 200:
+            data = response.json()
+            results = [res["name"] for res in data.get("results", [])]
+            return JsonResponse({"results": results}, json_dumps_params={'ensure_ascii': False})
+
+    return JsonResponse({"results": []})
+
